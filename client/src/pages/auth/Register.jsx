@@ -62,6 +62,9 @@ export default function RegisterPage() {
     setInfo("Sending verification code to your phone...");
     
     try {
+      if (!window.recaptchaVerifier) {
+        setupRecaptcha("recaptcha-container");
+      }
       const appVerifier = window.recaptchaVerifier;
       const res = await sendOTP(form.phone, appVerifier);
       
@@ -138,6 +141,9 @@ export default function RegisterPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-700">Join Servora</p>
           <h1 className="mt-2 text-3xl font-extrabold text-slate-950">Create your account</h1>
           <p className="mt-2 text-sm text-slate-500">Book trusted professionals for your home needs.</p>
+
+          {/* Invisible reCAPTCHA container always in DOM */}
+          <div id="recaptcha-container"></div>
 
           {!otpSent ? (
             <form onSubmit={handleSendOTP} className="mt-6 space-y-4">
@@ -216,9 +222,6 @@ export default function RegisterPage() {
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-
-              {/* Invisible reCAPTCHA container */}
-              <div id="recaptcha-container"></div>
 
               {/* Alerts */}
               {info && (

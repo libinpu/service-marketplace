@@ -27,6 +27,18 @@ export const sendOTP = async (phoneNumber, appVerifier) => {
     
     if (error.code === 'auth/invalid-phone-number') {
       message = "Invalid phone number format. Include country code (e.g. +1).";
+    } else if (error.code === 'auth/too-many-requests') {
+      message = "Too many requests. Please try again later.";
+    }
+
+    // Clear reCAPTCHA so it can be re-initialized on next attempt
+    if (window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (e) {
+        console.error("Error clearing recaptcha", e);
+      }
+      window.recaptchaVerifier = null;
     }
 
     return { success: false, message };
